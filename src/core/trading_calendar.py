@@ -30,13 +30,14 @@ except ImportError:
     )
 
 # Market -> exchange code (exchange-calendars)
-MARKET_EXCHANGE = {"cn": "XSHG", "hk": "XHKG", "us": "XNYS"}
+MARKET_EXCHANGE = {"cn": "XSHG", "hk": "XHKG", "us": "XNYS", "tw": "XTAI"}
 
 # Market -> IANA timezone for "today"
 MARKET_TIMEZONE = {
     "cn": "Asia/Shanghai",
     "hk": "Asia/Hong_Kong",
     "us": "America/New_York",
+    "tw": "Asia/Taipei",
 }
 
 
@@ -51,12 +52,14 @@ def get_market_for_stock(code: str) -> Optional[str]:
         return None
     code = (code or "").strip().upper()
 
-    from data_provider import is_us_stock_code, is_us_index_code, is_hk_stock_code
+    from data_provider import is_us_stock_code, is_us_index_code, is_hk_stock_code, is_tw_stock_code
 
     if is_us_stock_code(code) or is_us_index_code(code):
         return "us"
     if is_hk_stock_code(code):
         return "hk"
+    if is_tw_stock_code(code):
+        return "tw"
     # A-share: 6-digit numeric
     if code.isdigit() and len(code) == 6:
         return "cn"
@@ -98,7 +101,7 @@ def get_open_markets_today() -> Set[str]:
         Set of market keys ('cn', 'hk', 'us') that are trading today
     """
     if not _XCALS_AVAILABLE:
-        return {"cn", "hk", "us"}
+        return {"cn", "hk", "us", "tw"}
     result: Set[str] = set()
     from zoneinfo import ZoneInfo
     for mkt, tz_name in MARKET_TIMEZONE.items():
@@ -128,18 +131,19 @@ def compute_effective_region(
         '': all relevant markets closed, skip market review
         'cn' | 'us' | 'both': effective subset for today
     """
-    if config_region not in ("cn", "us", "both"):
+    if config_region not in ("cn", "us", "tw", "both", "all"):
         config_region = "cn"
     if config_region == "cn":
         return "cn" if "cn" in open_markets else ""
     if config_region == "us":
         return "us" if "us" in open_markets else ""
-    # both
-    parts = []
-    if "cn" in open_markets:
-        parts.append("cn")
-    if "us" in open_markets:
-        parts.append("us")
+    if config_region == "tw":
+        return "tw" if "tw" in open_markets else ""
+    # both (cn + us) / all (cn + us + tw)
+    candidate_markets = ["cn", "us"] if config_region == "both" else ["cn", "us", "tw"]
+    parts = [m for m in candidate_markets if m in open_markets]
     if not parts:
         return ""
-    return "both" if len(parts) == 2 else parts[0]
+    if len(parts) == len(candidate_markets):
+        return config_region  # all candidates open → return original value
+    return parts[0] if len(parts) == 1 else "both"

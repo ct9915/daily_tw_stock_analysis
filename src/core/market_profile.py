@@ -53,9 +53,24 @@ US_PROFILE = MarketProfile(
     has_sector_rankings=False,
 )
 
+TW_PROFILE = MarketProfile(
+    region="tw",
+    mood_index_code="^TWII",
+    news_queries=[
+        "台股 大盤 行情",
+        "加權指數 外資 買賣超",
+        "台積電 半導體 電子股",
+    ],
+    prompt_index_hint="分析台灣加權指數、櫃買指數（OTC）走勢特點及外資法人動向",
+    has_market_stats=False,
+    has_sector_rankings=False,
+)
+
 
 def get_profile(region: str) -> MarketProfile:
     """根据 region 返回对应的 MarketProfile"""
     if region == "us":
         return US_PROFILE
+    if region == "tw":
+        return TW_PROFILE
     return CN_PROFILE

@@ -12,6 +12,7 @@
 #   etf         - etf分析(卫星etf 563230)
 #   hk-stock    - 港股分析（腾讯、阿里）
 #   us-stock    - 美股分析（苹果、特斯拉）
+#   tw-stock    - 台股分析（台積電）
 #   mixed       - 混合市场分析
 #   single      - 单股模式测试
 #   dry-run     - 仅获取数据不分析
@@ -119,11 +120,19 @@ test_us_stock() {
     success "美股分析测试完成"
 }
 
-# 测试5: 混合市场
+# 测试5: 台股分析
+test_tw_stock() {
+    header "测试场景: 台股分析"
+    info "分析台股: tw2330(台積電), tw2317(鴻海)"
+    python3 main.py --stocks tw2330 --no-market-review "$@"
+    success "台股分析测试完成"
+}
+
+# 测试6: 混合市场
 test_mixed() {
     header "测试场景: 混合市场分析"
-    info "分析混合市场: 600519(A股), hk00700(港股), AAPL(美股)"
-    python3 main.py --stocks 600519,hk00700,AAPL --no-market-review
+    info "分析混合市场: 600519(A股), hk00700(港股), AAPL(美股), tw2330(台股)"
+    python3 main.py --stocks 600519,hk00700,AAPL,tw2330 --no-market-review
     success "混合市场测试完成"
 }
 
@@ -314,6 +323,10 @@ main() {
             shift
             test_us_stock "$@"
             ;;
+        tw-stock|tw_stock|twstock|tw)
+            shift
+            test_tw_stock "$@"
+            ;;
         mixed|mix)
             shift
             test_mixed "$@"
@@ -363,6 +376,7 @@ main() {
             echo "  etf         - ETF分析"
             echo "  hk-stock    - 港股分析"
             echo "  us-stock    - 美股分析"
+            echo "  tw-stock    - 台股分析"
             echo "  mixed       - 混合市场分析"
             echo "  single      - 单股推送模式"
             echo "  dry-run     - 仅获取数据"

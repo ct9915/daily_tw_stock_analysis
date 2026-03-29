@@ -53,29 +53,33 @@ def run_market_review(
         if override_region is not None
         else (getattr(config, 'market_review_region', 'cn') or 'cn')
     )
-    if region not in ('cn', 'us', 'both'):
+    if region not in ('cn', 'us', 'tw', 'both', 'all'):
         region = 'cn'
 
     try:
-        if region == 'both':
-            # 顺序执行 A 股 + 美股，合并报告
-            cn_analyzer = MarketAnalyzer(
-                search_service=search_service, analyzer=analyzer, region='cn'
-            )
-            us_analyzer = MarketAnalyzer(
-                search_service=search_service, analyzer=analyzer, region='us'
-            )
-            logger.info("生成 A 股大盘复盘报告...")
-            cn_report = cn_analyzer.run_daily_review()
-            logger.info("生成美股大盘复盘报告...")
-            us_report = us_analyzer.run_daily_review()
+        if region in ('both', 'all'):
+            # 顺序执行各市场，合并报告
+            # 'both' 保持原语义（A 股 + 美股）；'all' 额外含台股
+            regions_to_run = ['cn', 'us']
+            if region == 'all':
+                regions_to_run.append('tw')
+
+            _REGION_TITLES = {
+                'cn': '# A股大盤複盤',
+                'us': '# 美股大盤複盤',
+                'tw': '# 台股大盤複盤',
+            }
             review_report = ''
-            if cn_report:
-                review_report = f"# A股大盘复盘\n\n{cn_report}"
-            if us_report:
-                if review_report:
-                    review_report += "\n\n---\n\n> 以下为美股大盘复盘\n\n"
-                review_report += f"# 美股大盘复盘\n\n{us_report}"
+            for r in regions_to_run:
+                r_analyzer = MarketAnalyzer(
+                    search_service=search_service, analyzer=analyzer, region=r
+                )
+                logger.info(f"生成 {r} 大盘复盘报告...")
+                r_report = r_analyzer.run_daily_review()
+                if r_report:
+                    if review_report:
+                        review_report += "\n\n---\n\n"
+                    review_report += f"{_REGION_TITLES.get(r, '')}\n\n{r_report}"
             if not review_report:
                 review_report = None
         else:

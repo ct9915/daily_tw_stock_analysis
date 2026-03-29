@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- 新条目格式：- [类型] 描述（类型取值：新功能/改进/修复/文档/测试/chore）-->
 <!-- 每条独立一行追加到本段末尾，无需分类标题，合并时冲突最小 -->
 
-- [修复] 🐳 **Docker WebUI 运行时优先复用预构建静态资源** — `prepare_webui_frontend_assets()` 现在会先检查镜像内已有的 `static/index.html` 是否可直接复用；当容器运行时不包含 `apps/dsa-web` 源码目录且未安装 `npm` 时，也不会误报“未找到前端项目，无法自动构建”，从而恢复 Docker 部署后的 WebUI 打开能力。
+- [新功能] 新增台股（TWSE/TPEX）市場支援：`tw2330` 前綴格式代碼識別與正規化、yfinance `.TW` 資料路由（快速路徑）、±10% 漲跌幅/T+2 交割市場指引注入 LLM Prompt、台股三維分析策略藍圖（TW_BLUEPRINT）、加權指數大盤複盤設定檔（TW_PROFILE，指數代碼 `^TWII`）、`MARKET_REVIEW_REGION=tw` 及 `all`（A股+美股+台股）複盤支援
+- [修复] 🐳 **Docker WebUI 运行时优先复用预构建静态资源** — `prepare_webui_frontend_assets()` 现在会先检查镜像内已有的 `static/index.html` 是否可直接复用；当容器运行时不包含 `apps/dsa-web` 源码目录且未安装 `npm` 时，也不会误报”未找到前端项目，无法自动构建”，从而恢复 Docker 部署后的 WebUI 打开能力。
 
 ## [3.11.0] - 2026-03-27
 

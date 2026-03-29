@@ -91,6 +91,12 @@ def normalize_stock_code(stock_code: str) -> str:
         if candidate.isdigit() and 1 <= len(candidate) <= 5:
             return f"HK{candidate.zfill(5)}"
 
+    # Normalize TW prefix (e.g. tw2330 -> TW2330)
+    if upper.startswith('TW') and not upper.startswith('TW.'):
+        candidate = upper[2:]
+        if candidate.isdigit() and 1 <= len(candidate) <= 6:
+            return f"TW{candidate}"
+
     # Strip SH/SZ prefix (e.g. SH600519 -> 600519)
     if upper.startswith(('SH', 'SZ')) and not upper.startswith('SH.') and not upper.startswith('SZ.'):
         candidate = code[2:]
@@ -109,6 +115,8 @@ def normalize_stock_code(stock_code: str) -> str:
         base, suffix = code.rsplit('.', 1)
         if suffix.upper() == 'HK' and base.isdigit() and 1 <= len(base) <= 5:
             return f"HK{base.zfill(5)}"
+        if suffix.upper() in ('TW', 'TWO') and base.isdigit() and 1 <= len(base) <= 6:
+            return f"TW{base}"
         if suffix.upper() in ('SH', 'SZ', 'SS', 'BJ') and base.isdigit():
             return base
 
@@ -144,6 +152,27 @@ def _is_hk_market(code: str) -> bool:
     return False
 
 
+def _is_tw_market(code: str) -> bool:
+    """
+    判定是否为台股代码。
+
+    支持 `TW2330` 前缀格式及 `2330.TW` / `6770.TWO` 后缀格式。
+    """
+    normalized = (code or "").strip().upper()
+    if normalized.startswith("TW") and len(normalized) > 2:
+        rest = normalized[2:]
+        if rest.isdigit() and 1 <= len(rest) <= 6:
+            return True
+    if normalized.endswith(".TW") or normalized.endswith(".TWO"):
+        return True
+    return False
+
+
+def is_tw_stock_code(code: str) -> bool:
+    """Public API: determine if a stock code is a Taiwan stock."""
+    return _is_tw_market(code)
+
+
 def _is_etf_code(code: str) -> bool:
     """判定 A 股 ETF 基金代码（保守规则）。"""
     normalized = normalize_stock_code(code)
@@ -155,11 +184,13 @@ def _is_etf_code(code: str) -> bool:
 
 
 def _market_tag(code: str) -> str:
-    """返回市场标签: cn/us/hk."""
+    """返回市场标签: cn/us/hk/tw."""
     if _is_us_market(code):
         return "us"
     if _is_hk_market(code):
         return "hk"
+    if _is_tw_market(code):
+        return "tw"
     return "cn"
 
 
@@ -859,6 +890,42 @@ class DataFetcherManager:
                     break
             # YfinanceFetcher failed or not found
             error_summary = f"美股/美股指数 {stock_code} 获取失败:\n" + "\n".join(errors)
+            elapsed = time.time() - request_start
+            logger.error(f"[数据源终止] {stock_code} 获取失败: elapsed={elapsed:.2f}s\n{error_summary}")
+            raise DataFetchError(error_summary)
+
+        # 快速路径：台股直接路由到 YfinanceFetcher
+        if is_tw_stock_code(stock_code):
+            for attempt, fetcher in enumerate(self._fetchers, start=1):
+                if fetcher.name == "YfinanceFetcher":
+                    try:
+                        logger.info(
+                            f"[数据源尝试 {attempt}/{total_fetchers}] [{fetcher.name}] "
+                            f"台股 {stock_code} 直接路由..."
+                        )
+                        df = fetcher.get_daily_data(
+                            stock_code=stock_code,
+                            start_date=start_date,
+                            end_date=end_date,
+                            days=days,
+                        )
+                        if df is not None and not df.empty:
+                            elapsed = time.time() - request_start
+                            logger.info(
+                                f"[数据源完成] {stock_code} 使用 [{fetcher.name}] 获取成功: "
+                                f"rows={len(df)}, elapsed={elapsed:.2f}s"
+                            )
+                            return df, fetcher.name
+                    except Exception as e:
+                        error_type, error_reason = summarize_exception(e)
+                        error_msg = f"[{fetcher.name}] ({error_type}) {error_reason}"
+                        logger.warning(
+                            f"[数据源失败 {attempt}/{total_fetchers}] [{fetcher.name}] {stock_code}: "
+                            f"error_type={error_type}, reason={error_reason}"
+                        )
+                        errors.append(error_msg)
+                    break
+            error_summary = f"台股 {stock_code} 获取失败:\n" + "\n".join(errors)
             elapsed = time.time() - request_start
             logger.error(f"[数据源终止] {stock_code} 获取失败: elapsed={elapsed:.2f}s\n{error_summary}")
             raise DataFetchError(error_summary)
@@ -1775,7 +1842,7 @@ class DataFetcherManager:
         stock_code = normalize_stock_code(stock_code)
         market = _market_tag(stock_code)
         is_etf = _is_etf_code(stock_code)
-        if market in {"us", "hk"}:
+        if market in {"us", "hk", "tw"}:
             return self._build_market_not_supported(
                 market=market,
                 reason="market not supported",

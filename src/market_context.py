@@ -17,7 +17,7 @@ def detect_market(stock_code: Optional[str]) -> str:
     """Detect market from stock code.
 
     Returns:
-        One of 'cn', 'hk', 'us', or 'cn' as fallback.
+        One of 'cn', 'hk', 'us', 'tw', or 'cn' as fallback.
     """
     if not stock_code:
         return "cn"
@@ -33,6 +33,13 @@ def detect_market(stock_code: Optional[str]) -> str:
     # 5-digit pure numbers are HK (A-shares are 6-digit)
     if code.isdigit() and len(code) == 5:
         return "hk"
+
+    # TW stocks: TW prefix followed by digits (e.g. TW2330, TW00050)
+    # or .TW / .TWO suffix (e.g. 2330.TW, 6770.TWO)
+    if code.startswith("TW") and len(code) > 2 and code[2:].isdigit():
+        return "tw"
+    if code.endswith(".TW") or code.endswith(".TWO"):
+        return "tw"
 
     # US stocks: 1-5 uppercase letters (AAPL, TSLA, GOOGL)
     # Also handles suffixed forms like BRK.B
@@ -57,6 +64,10 @@ _MARKET_ROLES = {
     "us": {
         "zh": "美股",
         "en": "US stock",
+    },
+    "tw": {
+        "zh": "台股",
+        "en": "Taiwan stock",
     },
 }
 
@@ -89,6 +100,19 @@ _MARKET_GUIDELINES = {
         "en": (
             "- This analysis covers a **US stock** (listed on NYSE/NASDAQ).\n"
             "- US stocks have no daily price limits (but have circuit breakers), allow T+0 and pre/after-market trading. Consider USD FX, Fed policy, and SEC regulations."
+        ),
+    },
+    "tw": {
+        "zh": (
+            "- 本次分析對象為**台股**（台灣證券交易所或櫃買中心上市股票）。\n"
+            "- 台股漲跌幅限制為 ±10%，採 T+2 交割制度，需關注新台幣匯率、外資法人買賣超動向、\n"
+            "  半導體與電子供應鏈週期，以及台積電（2330）對加權指數的高度影響。"
+        ),
+        "en": (
+            "- This analysis covers a **Taiwan stock** (listed on TWSE or TPEX).\n"
+            "- Taiwan stocks have a ±10% daily price limit and T+2 settlement. Consider TWD FX, "
+            "foreign institutional investor (FINI) net buy/sell flows, semiconductor/electronics supply chain cycles, "
+            "and TSMC's (2330) outsized influence on the TAIEX index."
         ),
     },
 }

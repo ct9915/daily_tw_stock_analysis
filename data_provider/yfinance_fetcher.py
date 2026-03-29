@@ -122,6 +122,12 @@ class YfinanceFetcher(BaseFetcher):
             logger.debug(f"转换港股代码: {stock_code} -> {hk_code}.HK")
             return f"{hk_code}.HK"
 
+        # 台股：TW前缀 -> .TW后缀（台灣證券交易所 TWSE）
+        if code.startswith('TW') and len(code) > 2 and code[2:].isdigit():
+            tw_code = code[2:]
+            logger.debug(f"转换台股代码: {stock_code} -> {tw_code}.TW")
+            return f"{tw_code}.TW"
+
         # 已经包含后缀的情况
         if '.SS' in code or '.SZ' in code or '.HK' in code or '.BJ' in code:
             return code

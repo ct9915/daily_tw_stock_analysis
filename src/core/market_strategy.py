@@ -130,6 +130,56 @@ US_BLUEPRINT = MarketStrategyBlueprint(
 )
 
 
+TW_BLUEPRINT = MarketStrategyBlueprint(
+    region="tw",
+    title="台股市場三維分析策略",
+    positioning="聚焦加權指數趨勢、外資法人動向與電子供應鏈輪動，形成次日交易計畫。",
+    principles=[
+        "先看加權指數與外資買賣超方向，再看成交量能，最後確認電子/傳產板塊持續性。",
+        "結論必須對應至倉位節奏、風控動作與匯率風險評估。",
+        "判斷使用當日數據與近 3 日新聞，不臆測未經驗證資訊。",
+    ],
+    dimensions=[
+        StrategyDimension(
+            name="指數趨勢",
+            objective="判斷加權指數處於上升、震盪或防守階段。",
+            checkpoints=[
+                "加權指數與 OTC 指數是否同向",
+                "成交量是否放大配合上漲或縮量下跌",
+                "關鍵支撐壓力（如月線、季線）是否突破或失守",
+            ],
+        ),
+        StrategyDimension(
+            name="外資法人動向",
+            objective="掌握主力資金的風險偏好與籌碼結構。",
+            checkpoints=[
+                "外資單日買賣超金額與連續方向",
+                "投信與自營商是否形成合力或分歧",
+                "台積電（2330）外資持股比例與單日異動",
+            ],
+        ),
+        StrategyDimension(
+            name="產業輪動",
+            objective="辨識可交易主線與規避弱勢方向。",
+            checkpoints=[
+                "半導體/IC 設計板塊是否持續領漲",
+                "傳產、金融、航運等非電子板塊是否出現輪漲訊號",
+                "領跌板塊是否向其他板塊擴散",
+            ],
+        ),
+    ],
+    action_framework=[
+        "進攻：加權指數突破壓力 + 外資持續買超 + 電子主線強化。",
+        "均衡：指數震盪或外資動向分歧，控制倉位並等待確認訊號。",
+        "防守：指數跌破支撐 + 外資連續賣超，優先風控與降低持股比例。",
+    ],
+)
+
+
 def get_market_strategy_blueprint(region: str) -> MarketStrategyBlueprint:
     """Return strategy blueprint by market region."""
-    return US_BLUEPRINT if region == "us" else CN_BLUEPRINT
+    if region == "us":
+        return US_BLUEPRINT
+    if region == "tw":
+        return TW_BLUEPRINT
+    return CN_BLUEPRINT
