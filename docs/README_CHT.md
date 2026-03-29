@@ -2,8 +2,8 @@
 
 # 股票智能分析系統
 
-[![GitHub stars](https://img.shields.io/github/stars/ZhuLinsen/daily_stock_analysis?style=social)](https://github.com/ZhuLinsen/daily_stock_analysis/stargazers)
-[![CI](https://github.com/ZhuLinsen/daily_stock_analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/ZhuLinsen/daily_stock_analysis/actions/workflows/ci.yml)
+[![GitHub stars](https://img.shields.io/github/stars/ct9915/daily_tw_stock_analysis?style=social)](https://github.com/ct9915/daily_tw_stock_analysis/stargazers)
+[![CI](https://github.com/ct9915/daily_tw_stock_analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/ct9915/daily_tw_stock_analysis/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-Ready-2088FF?logo=github-actions&logoColor=white)](https://github.com/features/actions)
@@ -11,10 +11,10 @@
 
 <p>
   <a href="https://trendshift.io/repositories/18527" target="_blank"><img src="https://trendshift.io/api/badge/repositories/18527" alt="ZhuLinsen%2Fdaily_stock_analysis | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-  <a href="https://hellogithub.com/repository/ZhuLinsen/daily_stock_analysis" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=6daa16e405ce46ed97b4a57706aeb29f&claim_uid=pfiJMqhR9uvDGlT&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+  <a href="https://hellogithub.com/repository/ct9915/daily_tw_stock_analysis" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=6daa16e405ce46ed97b4a57706aeb29f&claim_uid=pfiJMqhR9uvDGlT&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
-**基於 AI 大模型的 A股/港股/美股 智能分析系統**
+**基於 AI 大模型的 A股/港股/美股/台股 智能分析系統**
 
 自動分析自選股 → 生成決策儀表盤 → 多渠道推送（Telegram/Discord/Slack/郵件/企業微信/飛書）
 
@@ -41,8 +41,8 @@
 |------|------|------|
 | AI | 決策儀表盤 | 一句話核心結論 + 精確買賣點位 + 操作檢查清單 |
 | 分析 | 多維度分析 | 技術面 + 籌碼分布 + 輿情情報 + 實時行情 |
-| 市場 | 全球市場 | 支援 A股、港股、美股 |
-| 補全 | 智慧補全 (MVP) | **[測試階段]** 首頁搜尋框支援代碼 / 名稱 / 拼音 / 別名聯想；本地索引已覆蓋 A股、港股、美股，並可透過 Tushare 或 AkShare 重新生成 |
+| 市場 | 全球市場 | 支援 A股、港股、美股、台股 |
+| 補全 | 智慧補全 (MVP) | **[測試階段]** 首頁搜尋框支援代碼 / 名稱 / 拼音 / 別名聯想；本地索引已覆蓋 A股、港股、美股、台股，並可透過 Tushare 或 AkShare 重新生成 |
 | 復盤 | 大盤復盤 | 每日市場概覽、板塊漲跌、北向資金 |
 | 回測 | AI 回測驗證 | 自動評估歷史分析準確率，方向勝率、止盈止損命中率 |
 | **Agent 問股** | **策略對話** | **多輪策略問答，支援 11 種內建策略（Web/Bot/API）** |
@@ -127,7 +127,7 @@
 
 | Secret 名稱 | 說明 | 必填 |
 |------------|------|:----:|
-| `STOCK_LIST` | 自選股代碼，如 `600519,hk00700,AAPL,TSLA` | ✅ |
+| `STOCK_LIST` | 自選股代碼，如 `600519,hk00700,AAPL,TSLA,TW2330`（台股使用 `TW` + 代碼，如 `TW2330`、`TW00050`） | ✅ |
 | `TAVILY_API_KEYS` | [Tavily](https://tavily.com/) 搜索 API（新聞搜索） | 推薦 |
 | `MINIMAX_API_KEYS` | [MiniMax](https://platform.minimaxi.com/) Coding Plan Web Search（結構化搜索結果） | 可選 |
 | `BOCHA_API_KEYS` | [博查搜索](https://open.bocha.cn/) Web Search API（中文搜索優化，支持AI摘要，多個key用逗號分隔） | 可選 |
@@ -245,7 +245,7 @@
 首頁分析輸入框現已升級為類搜尋引擎的補全框，降低手動記憶股票代碼的負擔。
 
 - **多維匹配**：支援股票代碼、公司名稱、拼音縮寫與別名（例如 `gzmt` -> 貴州茅台、`tencent` -> 騰訊控股、`aapl` -> Apple Inc.）。
-- **多市場覆蓋**：本地索引已覆蓋 **A股、港股、美股** 三個市場；需要時可基於 Tushare 或 AkShare 資料重新生成。
+- **多市場覆蓋**：本地索引已覆蓋 **A股、港股、美股、台股** 四個市場；需要時可基於 Tushare 或 AkShare 資料重新生成。
 - **自動降級**：
   - 若索引尚未更新、缺少新上市標的，或載入失敗，介面會自動退回一般手動輸入模式，不阻斷分析流程。
   - 若補全未命中，直接按 Enter 仍會送出原始輸入。
@@ -278,7 +278,7 @@ daily_stock_analysis/
 
 ## 🗺️ Roadmap
 
-> 📢 以下功能將視後續情況逐步完成，如果你有好的想法或建議，歡迎 [提交 Issue](https://github.com/ZhuLinsen/daily_stock_analysis/issues) 討論！
+> 📢 以下功能將視後續情況逐步完成，如果你有好的想法或建議，歡迎 [提交 Issue](https://github.com/ct9915/daily_tw_stock_analysis/issues) 討論！
 
 ### 🔔 通知渠道擴展
 - [x] 企業微信機器人
@@ -307,6 +307,7 @@ daily_stock_analysis/
 - [x] 港股支持
 - [x] Web 管理界面 (簡易版)
 - [x] 美股支持
+- [x] 台股支持
 - [ ] 歷史分析回測
 
 ## ☕ 支持項目
@@ -329,17 +330,17 @@ daily_stock_analysis/
 這將有助於項目的持續維護和社區發展。
 
 ## 聯繫與合作
-- GitHub Issues：[提交 Issue](https://github.com/ZhuLinsen/daily_stock_analysis/issues)
+- GitHub Issues：[提交 Issue](https://github.com/ct9915/daily_tw_stock_analysis/issues)
 - 合作郵箱：zhuls345@gmail.com
 
 ## Star History
 **如果覺得有用，請給個 ⭐ Star 支持一下！**
 
-<a href="https://star-history.com/#ZhuLinsen/daily_stock_analysis&Date">
+<a href="https://star-history.com/#ct9915/daily_tw_stock_analysis&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ZhuLinsen/daily_stock_analysis&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ZhuLinsen/daily_stock_analysis&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ZhuLinsen/daily_stock_analysis&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ct9915/daily_tw_stock_analysis&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ct9915/daily_tw_stock_analysis&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ct9915/daily_tw_stock_analysis&type=Date" />
  </picture>
 </a>
 

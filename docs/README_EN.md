@@ -2,8 +2,8 @@
 
 # AI Stock Analysis System
 
-[![GitHub stars](https://img.shields.io/github/stars/ZhuLinsen/daily_stock_analysis?style=social)](https://github.com/ZhuLinsen/daily_stock_analysis/stargazers)
-[![CI](https://github.com/ZhuLinsen/daily_stock_analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/ZhuLinsen/daily_stock_analysis/actions/workflows/ci.yml)
+[![GitHub stars](https://img.shields.io/github/stars/ct9915/daily_tw_stock_analysis?style=social)](https://github.com/ct9915/daily_tw_stock_analysis/stargazers)
+[![CI](https://github.com/ct9915/daily_tw_stock_analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/ct9915/daily_tw_stock_analysis/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-Ready-2088FF?logo=github-actions&logoColor=white)](https://github.com/features/actions)
@@ -11,10 +11,10 @@
 
 <p>
   <a href="https://trendshift.io/repositories/18527" target="_blank"><img src="https://trendshift.io/api/badge/repositories/18527" alt="ZhuLinsen%2Fdaily_stock_analysis | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-  <a href="https://hellogithub.com/repository/ZhuLinsen/daily_stock_analysis" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=6daa16e405ce46ed97b4a57706aeb29f&claim_uid=pfiJMqhR9uvDGlT&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+  <a href="https://hellogithub.com/repository/ct9915/daily_tw_stock_analysis" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=6daa16e405ce46ed97b4a57706aeb29f&claim_uid=pfiJMqhR9uvDGlT&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
-**AI-powered stock analysis system for A-shares / Hong Kong / US stocks**
+**AI-powered stock analysis system for A-shares / Hong Kong / US / Taiwan stocks**
 
 Analyze your watchlist daily → generate a decision dashboard → push to multiple channels (Telegram/Discord/Slack/Email/WeChat Work/Feishu)
 
@@ -41,8 +41,8 @@ English | [简体中文](../README.md) | [繁體中文](README_CHT.md)
 |--------|---------|-------------|
 | AI | Decision Dashboard | One-sentence conclusion + precise entry/exit levels + action checklist |
 | Analysis | Multi-dimensional Analysis | Technicals + chip distribution + sentiment + real-time quotes |
-| Market | Global Markets | A-shares, Hong Kong stocks, US stocks |
-| Search | Smart Autocomplete (MVP) | **[Beta]** Home search supports code/name/pinyin/aliases; the local index now covers A-shares, Hong Kong, and US stocks and can be refreshed from Tushare or AkShare data |
+| Market | Global Markets | A-shares, Hong Kong stocks, US stocks, Taiwan stocks |
+| Search | Smart Autocomplete (MVP) | **[Beta]** Home search supports code/name/pinyin/aliases; the local index now covers A-shares, Hong Kong, US, and Taiwan stocks and can be refreshed from Tushare or AkShare data |
 | Review | Market Review | Daily overview, sectors, northbound capital flow |
 | Backtest | AI Backtest Validation | Auto-evaluate historical analysis accuracy, direction win rate, SL/TP hit rates |
 | Agent Q&A | Strategy Chat | Multi-turn strategy chat with 11 built-in trading strategies (internally loaded as skills) (Web/Bot/API) |
@@ -130,7 +130,7 @@ Go to your forked repo → `Settings` → `Secrets and variables` → `Actions` 
 
 | Secret Name | Description | Required |
 |------------|------|:----:|
-| `STOCK_LIST` | Watchlist codes, e.g., `600519,AAPL,hk00700` | ✅ |
+| `STOCK_LIST` | Watchlist codes, e.g., `600519,AAPL,hk00700,TW2330` | ✅ |
 | `TAVILY_API_KEYS` | [Tavily](https://tavily.com/) Search API (for news) | Recommended |
 | `MINIMAX_API_KEYS` | [MiniMax](https://platform.minimaxi.com/) Coding Plan Web Search (structured search results) | Optional |
 | `BRAVE_API_KEYS` | [Brave Search](https://brave.com/search/api/) API (privacy-focused, US stocks optimized) | Optional |
@@ -155,6 +155,7 @@ Go to your forked repo → `Settings` → `Secrets and variables` → `Actions` 
 | BSE (Beijing) | 8/4/92 prefix, 6-digit | `920748`, `838163`, `430047` |
 | HK Stocks | hk + 5-digit number | `hk00700`, `hk09988` |
 | US Stocks | 1-5 uppercase letters | `AAPL`, `TSLA`, `GOOGL` |
+| TW Stocks | TW + 4-6 digit number | `TW2330`, `TW00050`, `TW2317` |
 
 #### 3. Enable Actions
 
@@ -178,7 +179,7 @@ The system will:
 #### 1. Clone Repository
 
 ```bash
-git clone https://github.com/ZhuLinsen/daily_stock_analysis.git
+git clone https://github.com/ct9915/daily_tw_stock_analysis.git
 cd daily_stock_analysis
 ```
 
@@ -210,7 +211,7 @@ Configure the following:
 GEMINI_API_KEY=your_gemini_api_key_here
 
 # Stock Watchlist (Mixed markets supported)
-STOCK_LIST=600519,AAPL,hk00700
+STOCK_LIST=600519,AAPL,hk00700,TW2330
 
 # Notification Channel (Choose at least one)
 TELEGRAM_BOT_TOKEN=your_bot_token
@@ -469,7 +470,7 @@ Enable the FastAPI service for configuration management and triggering analysis 
 The home analysis input now behaves more like a search box, reducing the need to memorize exact symbols.
 
 - **Multi-signal matching**: supports stock code, company name, pinyin abbreviation, and aliases (for example `gzmt` -> 贵州茅台, `tencent` -> 腾讯控股, `aapl` -> Apple Inc.).
-- **Multi-market coverage**: the local index now covers **A-shares, Hong Kong stocks, and US stocks**. It can be regenerated from either Tushare or AkShare source data when needed.
+- **Multi-market coverage**: the local index now covers **A-shares, Hong Kong stocks, US stocks, and Taiwan stocks**. It can be regenerated from either Tushare or AkShare source data when needed.
 - **Graceful fallback**:
   - If the index is outdated, missing a newly listed symbol, or fails to load, the UI falls back to plain manual input without blocking analysis.
   - If no suggestion matches, pressing Enter still submits the original input directly.
@@ -519,11 +520,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Made with ❤️ by AI enthusiasts | Star ⭐ this repo if you find it useful!**
 
 
-<a href="https://star-history.com/#ZhuLinsen/daily_stock_analysis&Date">
+<a href="https://star-history.com/#ct9915/daily_tw_stock_analysis&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ZhuLinsen/daily_stock_analysis&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ZhuLinsen/daily_stock_analysis&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ZhuLinsen/daily_stock_analysis&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ct9915/daily_tw_stock_analysis&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ct9915/daily_tw_stock_analysis&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ct9915/daily_tw_stock_analysis&type=Date" />
  </picture>
 </a>
 
@@ -551,8 +552,8 @@ The developers of this tool are not liable for any financial losses resulting fr
 
 ## 📞 Contact
 
-- GitHub Issues: [Report bugs or request features](https://github.com/ZhuLinsen/daily_stock_analysis/issues)
-- Discussions: [Join discussions](https://github.com/ZhuLinsen/daily_stock_analysis/discussions)
+- GitHub Issues: [Report bugs or request features](https://github.com/ct9915/daily_tw_stock_analysis/issues)
+- Discussions: [Join discussions](https://github.com/ct9915/daily_tw_stock_analysis/discussions)
 - Email: zhuls345@gmail.com
 
 ----
