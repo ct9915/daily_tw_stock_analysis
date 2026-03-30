@@ -1,6 +1,6 @@
 <div align="center">
 
-# 股票智能分析系統
+# 股票智慧分析系統
 
 [![GitHub stars](https://img.shields.io/github/stars/ct9915/daily_tw_stock_analysis?style=social)](https://github.com/ct9915/daily_tw_stock_analysis/stargazers)
 [![CI](https://github.com/ct9915/daily_tw_stock_analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/ct9915/daily_tw_stock_analysis/actions/workflows/ci.yml)
@@ -25,15 +25,6 @@
  繁體中文 | [English](../README_EN.md) | [简体中文](../README.md)
 
 </div>
-
-## 💖 贊助商 (Sponsors)
-
-<div align="center">
-  <a href="https://serpapi.com/baidu-search-api?utm_source=github_daily_stock_analysis" target="_blank">
-    <img src="../sources/serpapi_banner_zh.png" alt="輕鬆抓取搜尋引擎上的即時金融新聞數據 - SerpApi" height="160">
-  </a>
-</div>
-<br>
 
 ## ✨ 功能特性
 
