@@ -26,15 +26,6 @@
 
 </div>
 
-## 💖 贊助商 (Sponsors)
-
-<div align="center">
-  <a href="https://serpapi.com/baidu-search-api?utm_source=github_daily_stock_analysis" target="_blank">
-    <img src="./sources/serpapi_banner_zh.png" alt="輕鬆擷取搜尋引擎上的即時金融新聞資料 - SerpApi" height="160">
-  </a>
-</div>
-<br>
-
 ## ✨ 功能特色
 
 | 模組 | 功能 | 說明 |
